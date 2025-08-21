@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndoorFarming - مستقبل الصحة من قلب الطبيعة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            --tw-bg-opacity: 1;
+            background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+            color: #E5E7EB;
+        }
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .section-transition {
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            display: none;
+        }
+        .glow-button {
+            box-shadow: 0 0 5px #22c55e, 0 0 15px #22c55e, 0 0 25px #22c55e;
+            transition: all 0.3s ease-in-out;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 10px #22c55e, 0 0 25px #22c55e, 0 0 50px #22c55e;
+        }
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <!-- Header -->
+    <header class="bg-gray-900/70 backdrop-blur-md shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-black text-white nav-link" data-target="home">
+                <span class="text-green-400">Indoor</span>Farming
+            </a>
+            <div class="hidden md:flex items-center space-x-8 space-x-reverse">
+                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="home">الرئيسية</a>
+                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="supplements">المكملات</a>
+                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="remedies">العلاجات</a>
+                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="skincare">العناية بالبشرة</a>
+                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="about">من نحن</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden flex items-center text-white">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="home">الرئيسية</a>
+            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="supplements">المكملات الرياضية</a>
+            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="remedies">العلاجات الطبيعية</a>
+            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="skincare">العناية بالبشرة</a>
+            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="about">من نحن</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="page-section section-transition">
+            <!-- Hero Section -->
+            <div class="hero-bg text-white">
+                <div class="bg-black bg-opacity-60 min-h-[80vh] flex items-center">
+                    <div class="container mx-auto px-6 text-center">
+                        <h1 class="text-5xl md:text-7xl font-black mb-4 leading-tight">الزراعة الداخلية: ثورة في عالم الصحة</h1>
+                        <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-gray-300">منتجات نقية وفعالة، مزروعة بعناية في بيئة مثالية لتصل إليك بأعلى جودة.</p>
+                        <a href="#products" class="bg-green-500 hover:bg-green-400 text-gray-900 font-bold py-4 px-10 rounded-full transition duration-300 text-lg glow-button">استكشف المستقبل</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Categories -->
+            <div id="products" class="py-20 bg-gray-900">
+                <div class="container mx-auto px-6">
+                    <h2 class="text-4xl font-bold text-center mb-16 text-white">منتجاتنا المصممة لك</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Category 1: Supplements -->
+                        <div class="scroll-animate fade-in-up text-center p-8 glass-card rounded-2xl transform hover:-translate-y-2 transition-all duration-300">
+                            <div class="mb-4 bg-green-500/20 rounded-full w-24 h-24 flex items-center justify-center mx-auto"><i data-lucide="dumbbell" class="w-12 h-12 text-green-400"></i></div>
+                            <h3 class="text-2xl font-bold mb-2 text-white">المكملات الرياضية</h3>
+                            <p class="text-gray-400 mb-4">طاقة وقوة من مصادر نباتية نقية لأداء رياضي لا مثيل له.</p>
+                            <a href="#" class="font-bold text-green-400 hover:text-green-300 transition-colors nav-link" data-target="supplements">اعرف المزيد &rarr;</a>
+                        </div>
+                        <!-- Category 2: Remedies -->
+                        <div class="scroll-animate fade-in-up text-center p-8 glass-card rounded-2xl transform hover:-translate-y-2 transition-all duration-300" style="transition-delay: 150ms;">
+                            <div class="mb-4 bg-green-500/20 rounded-full w-24 h-24 flex items-center justify-center mx-auto"><i data-lucide="heart-pulse" class="w-12 h-12 text-green-400"></i></div>
+                            <h3 class="text-2xl font-bold mb-2 text-white">العلاجات الطبيعية</h3>
+                            <p class="text-gray-400 mb-4">دعم طبيعي لصحتك، يساعدك على مواجهة تحديات الأمراض المزمنة.</p>
+                             <a href="#" class="font-bold text-green-400 hover:text-green-300 transition-colors nav-link" data-target="remedies">اعرف المزيد &rarr;</a>
+                        </div>
+                        <!-- Category 3: Skincare -->
+                        <div class="scroll-animate fade-in-up text-center p-8 glass-card rounded-2xl transform hover:-translate-y-2 transition-all duration-300" style="transition-delay: 300ms;">
+                           <div class="mb-4 bg-green-500/20 rounded-full w-24 h-24 flex items-center justify-center mx-auto"><i data-lucide="sparkles" class="w-12 h-12 text-green-400"></i></div>
+                            <h3 class="text-2xl font-bold mb-2 text-white">العناية بالبشرة</h3>
+                            <p class="text-gray-400 mb-4">إشراقة وجمال مستوحى من أنقى المكونات الطبيعية لبشرة صحية.</p>
+                             <a href="#" class="font-bold text-green-400 hover:text-green-300 transition-colors nav-link" data-target="skincare">اعرف المزيد &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Sections (Supplements, Remedies, Skincare) -->
+        <section id="supplements" class="page-section section-hidden py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-12">المكملات الرياضية الطبيعية</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Product Card -->
+                    <div class="glass-card rounded-lg overflow-hidden group">
+                        <img src="https://placehold.co/400x300/16a34a/ffffff?text=بروتين+" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="بروتين نباتي">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl text-white">بروتين نباتي فائق النقاء</h3>
+                            <p class="text-gray-400 text-sm mt-1">لبناء عضلي صافي وتعافي أسرع.</p>
+                            <div class="mt-4 flex justify-between items-center">
+                                <span class="font-bold text-2xl text-green-400">150 ر.س</span>
+                                <button class="bg-green-500 text-gray-900 px-5 py-2 rounded-full hover:bg-green-400 text-sm font-bold transition-colors">أضف للسلة</button>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="glass-card rounded-lg overflow-hidden group">
+                        <img src="https://placehold.co/400x300/4ade80/000000?text=طاقة" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="معزز طاقة">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl text-white">محفز الطاقة العضوي</h3>
+                            <p class="text-gray-400 text-sm mt-1">لتركيز ذهني وأداء بدني متفجر.</p>
+                            <div class="mt-4 flex justify-between items-center">
+                                <span class="font-bold text-2xl text-green-400">120 ر.س</span>
+                                <button class="bg-green-500 text-gray-900 px-5 py-2 rounded-full hover:bg-green-400 text-sm font-bold transition-colors">أضف للسلة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="remedies" class="page-section section-hidden py-20">
+             <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-12">دعم طبيعي لصحتك</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="glass-card rounded-lg overflow-hidden group">
+                        <img src="https://placehold.co/400x300/facc15/000000?text=كركم" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="شاي الكركم">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl text-white">كبسولات الكركمين</h3>
+                            <p class="text-gray-400 text-sm mt-1">مضاد التهاب طبيعي لدعم صحة المفاصل.</p>
+                            <div class="mt-4 flex justify-between items-center">
+                                <span class="font-bold text-2xl text-green-400">70 ر.س</span>
+                                <button class="bg-green-500 text-gray-900 px-5 py-2 rounded-full hover:bg-green-400 text-sm font-bold transition-colors">أضف للسلة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="skincare" class="page-section section-hidden py-20">
+             <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-12">جمال نقي من الطبيعة</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="glass-card rounded-lg overflow-hidden group">
+                        <img src="https://placehold.co/400x300/ec4899/ffffff?text=سيروم" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="سيروم الورد">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl text-white">سيروم الهيالورونيك النباتي</h3>
+                            <p class="text-gray-400 text-sm mt-1">لترطيب فائق وبشرة ممتلئة بالحياة.</p>
+                            <div class="mt-4 flex justify-between items-center">
+                                <span class="font-bold text-2xl text-green-400">180 ر.س</span>
+                                <button class="bg-green-500 text-gray-900 px-5 py-2 rounded-full hover:bg-green-400 text-sm font-bold transition-colors">أضف للسلة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="page-section section-hidden py-20 bg-gray-900/50">
+             <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-8">رؤيتنا</h2>
+                <p class="max-w-3xl mx-auto text-center text-gray-300 text-lg">
+                    في "IndoorFarming"، نحن لا نزرع النباتات فقط، بل نزرع مستقبلاً أكثر صحة واستدامة. باستخدام أحدث تقنيات الزراعة الداخلية، نتحكم في كل متغير لنضمن أن كل ورقة وكل ثمرة تصل إلى إمكاناتها الكاملة، خالية من المبيدات ومليئة بالعناصر الغذائية. مهمتنا هي أن نضع قوة الطبيعة النقية بين يديك.
+                </p>
+             </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-700/50 pt-12">
+        <div class="container mx-auto px-6 text-center">
+             <a href="#" class="text-4xl font-black text-white nav-link" data-target="home">
+                <span class="text-green-400">Indoor</span>Farming
+            </a>
+            <p class="text-gray-400 mt-4">مستقبل الصحة من قلب الطبيعة</p>
+            <div class="mt-6 flex justify-center space-x-6 space-x-reverse">
+                <a href="#" class="text-gray-400 hover:text-green-400 transition-colors"><i data-lucide="facebook"></i></a>
+                <a href="#" class="text-gray-400 hover:text-green-400 transition-colors"><i data-lucide="instagram"></i></a>
+                <a href="#" class="text-gray-400 hover:text-green-400 transition-colors"><i data-lucide="twitter"></i></a>
+            </div>
+            <p class="text-gray-500 text-sm mt-8 pb-8">&copy; 2024 IndoorFarming. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize lucide icons
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pageSections = document.querySelectorAll('.page-section');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            // Function to switch pages
+            function showPage(targetId) {
+                pageSections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.style.display = 'block';
+                        setTimeout(() => {
+                            section.classList.remove('section-hidden');
+                        }, 20);
+                    } else {
+                        section.classList.add('section-hidden');
+                        setTimeout(() => {
+                           if(section.id !== targetId) section.style.display = 'none';
+                        }, 600); // Match transition duration
+                    }
+                });
+                window.scrollTo(0, 0);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.dataset.target;
+                    showPage(targetId);
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Scroll animation logic
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            });
+
+            const elementsToAnimate = document.querySelectorAll('.scroll-animate');
+            elementsToAnimate.forEach(el => observer.observe(el));
+
+            // Initially show the home page
+            showPage('home');
+        });
+    </script>
+
+</body>
+</html>
