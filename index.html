@@ -3,292 +3,771 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IndoorFarming - مستقبل الصحة من قلب الطبيعة</title>
+    <meta name="description" content="IndoorFarming تقدم مكملات غذائية طبيعية ونقية، مزروعة بتقنيات متقدمة في بيئة معزولة لضمان أعلى جودة وفعالية. اكتشف مستقبل الصحة الطبيعية.">
+    <title>IndoorFarming - مستقبل الصحة الطبيعية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
     <style>
+        :root {
+            --color-primary: #22c55e;
+            --color-primary-light: #4ade80;
+            --color-dark: #0a0a0a;
+            --color-stone: #1c1917;
+        }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Tajawal', sans-serif;
-            --tw-bg-opacity: 1;
-            background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+            background-color: var(--color-dark);
             color: #E5E7EB;
+            overflow-x: hidden;
         }
-        .hero-bg {
-            background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+        }
+        .content-section { position: relative; z-index: 1; }
+        .hero-content {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(28, 25, 23, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease-out;
+            transform-style: preserve-3d;
         }
-        .section-transition {
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        .glass-card:hover {
+            background: rgba(28, 25, 23, 0.7);
+            border-color: rgba(34, 197, 94, 0.5);
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
-        .section-hidden {
+        .glow-on-hover {
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .glow-on-hover:hover {
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.6), 0 0 50px rgba(34, 197, 94, 0.4);
+            transform: scale(1.05) translateY(-2px);
+        }
+        #loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--color-dark);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .loader-logo {
+            width: 256px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+        }
+        .section-title-underline {
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        .section-title-underline::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 120px;
+            height: 4px;
+            background: var(--color-primary);
+            border-radius: 2px;
             opacity: 0;
-            transform: translateY(30px);
-            display: none;
+            transform-origin: center;
+            transition: transform 0.8s ease-out, opacity 0.5s ease;
         }
-        .glow-button {
-            box-shadow: 0 0 5px #22c55e, 0 0 15px #22c55e, 0 0 25px #22c55e;
-            transition: all 0.3s ease-in-out;
+        .section-title-underline.in-view::after {
+            opacity: 1;
+            transform: translateX(-50%) scaleX(1);
         }
-        .glow-button:hover {
-            box-shadow: 0 0 10px #22c55e, 0 0 25px #22c55e, 0 0 50px #22c55e;
+        .hero-title-gradient {
+            background: -webkit-linear-gradient(45deg, #ffffff, #a7f3d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .fade-in-up {
+        .text-glow { text-shadow: 0 0 8px rgba(74, 222, 128, 0.5); }
+        .nav-link.active {
+            color: var(--color-primary-light);
+            text-shadow: 0 0 10px var(--color-primary);
+        }
+        #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+            transform: translateY(20px);
+        }
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background-color: rgba(28, 25, 23, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            color: #E5E7EB;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+        }
+        #cookie-banner {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            transition: bottom 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #cookie-banner.visible {
+            bottom: 0;
+        }
+        .faq-item .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), padding-top 0.5s ease;
+            padding-top: 0;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-top: 1rem;
+        }
+        .faq-item .faq-toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-item.active .faq-toggle-icon {
+            transform: rotate(45deg);
+        }
+        .testimonial-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--color-primary-light);
+            padding: 3px;
+            object-fit: cover;
+        }
+        .product-image {
+            transition: transform 0.4s ease;
+        }
+        .glass-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        /* ADDED: Styles for Mobile Menu */
+        #mobile-menu {
+            position: fixed;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 998;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
+        #mobile-menu a {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            color: #E5E7EB;
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-200">
+<body class="text-gray-200">
 
-    <!-- Header -->
-    <header class="bg-gray-900/70 backdrop-blur-md shadow-lg sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-3xl font-black text-white nav-link" data-target="home">
-                <span class="text-green-400">Indoor</span>Farming
-            </a>
-            <div class="hidden md:flex items-center space-x-8 space-x-reverse">
-                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="home">الرئيسية</a>
-                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="supplements">المكملات</a>
-                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="remedies">العلاجات</a>
-                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="skincare">العناية بالبشرة</a>
-                <a href="#" class="text-gray-300 hover:text-green-400 transition-colors duration-300 nav-link" data-target="about">من نحن</a>
-            </div>
-            <button id="mobile-menu-button" class="md:hidden flex items-center text-white">
-                <i data-lucide="menu"></i>
-            </button>
-        </nav>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden">
-            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="home">الرئيسية</a>
-            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="supplements">المكملات الرياضية</a>
-            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="remedies">العلاجات الطبيعية</a>
-            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="skincare">العناية بالبشرة</a>
-            <a href="#" class="block py-3 px-4 text-sm hover:bg-gray-800 nav-link" data-target="about">من نحن</a>
-        </div>
-    </header>
+    <div id="loader">
+        <img src="image/indoor farming.png" class="loader-logo" alt="Loading...">
+    </div>
 
-    <main>
-        <!-- Home Section -->
-        <section id="home" class="page-section section-transition">
-            <!-- Hero Section -->
-            <div class="hero-bg text-white">
-                <div class="bg-black bg-opacity-60 min-h-[80vh] flex items-center">
-                    <div class="container mx-auto px-6 text-center">
-                        <h1 class="text-5xl md:text-7xl font-black mb-4 leading-tight">الزراعة الداخلية: ثورة في عالم الصحة</h1>
-                        <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-gray-300">منتجات نقية وفعالة، مزروعة بعناية في بيئة مثالية لتصل إليك بأعلى جودة.</p>
-                        <a href="#products" class="bg-green-500 hover:bg-green-400 text-gray-900 font-bold py-4 px-10 rounded-full transition duration-300 text-lg glow-button">استكشف المستقبل</a>
-                    </div>
+    <canvas id="bg-canvas"></canvas>
+
+    <button id="back-to-top" aria-label="Back to top" class="z-50 bg-green-500/80 hover:bg-green-500 text-white rounded-full p-3 glow-on-hover">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
+
+    <div class="content-section">
+        <header class="fixed top-0 left-0 right-0 z-50">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center transition-all duration-300" id="navbar">
+                <a href="#" aria-label="IndoorFarming Home">
+                    <img src="image/indoor farming.png" class="h-16 w-auto" alt="IndoorFarming Logo">
+                </a>
+                <div class="hidden md:flex items-center space-x-8 space-x-reverse">
+                    <a href="#philosophy" class="nav-link text-gray-300 hover:text-green-400 transition-all duration-300 font-medium">فلسفتنا</a>
+                    <a href="#supplements" class="nav-link text-gray-300 hover:text-green-400 transition-all duration-300 font-medium">المكملات</a>
+                    <a href="#why-us" class="nav-link text-gray-300 hover:text-green-400 transition-all duration-300 font-medium">لماذا نحن؟</a>
+                    <a href="#process" class="nav-link text-gray-300 hover:text-green-400 transition-all duration-300 font-medium">طريقتنا</a>
+                    <a href="#testimonials" class="nav-link text-gray-300 hover:text-green-400 transition-all duration-300 font-medium">آراء العملاء</a>
+                    <a href="#faq" class="nav-link text-gray-300 hover:text-green-400 transition-all duration-300 font-medium">الأسئلة الشائعة</a>
+                    <a href="#contact" class="nav-link text-gray-300 hover:text-green-400 transition-all duration-300 font-medium">تواصل معنا</a>
                 </div>
-            </div>
-
-            <!-- Product Categories -->
-            <div id="products" class="py-20 bg-gray-900">
-                <div class="container mx-auto px-6">
-                    <h2 class="text-4xl font-bold text-center mb-16 text-white">منتجاتنا المصممة لك</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <!-- Category 1: Supplements -->
-                        <div class="scroll-animate fade-in-up text-center p-8 glass-card rounded-2xl transform hover:-translate-y-2 transition-all duration-300">
-                            <div class="mb-4 bg-green-500/20 rounded-full w-24 h-24 flex items-center justify-center mx-auto"><i data-lucide="dumbbell" class="w-12 h-12 text-green-400"></i></div>
-                            <h3 class="text-2xl font-bold mb-2 text-white">المكملات الرياضية</h3>
-                            <p class="text-gray-400 mb-4">طاقة وقوة من مصادر نباتية نقية لأداء رياضي لا مثيل له.</p>
-                            <a href="#" class="font-bold text-green-400 hover:text-green-300 transition-colors nav-link" data-target="supplements">اعرف المزيد &rarr;</a>
-                        </div>
-                        <!-- Category 2: Remedies -->
-                        <div class="scroll-animate fade-in-up text-center p-8 glass-card rounded-2xl transform hover:-translate-y-2 transition-all duration-300" style="transition-delay: 150ms;">
-                            <div class="mb-4 bg-green-500/20 rounded-full w-24 h-24 flex items-center justify-center mx-auto"><i data-lucide="heart-pulse" class="w-12 h-12 text-green-400"></i></div>
-                            <h3 class="text-2xl font-bold mb-2 text-white">العلاجات الطبيعية</h3>
-                            <p class="text-gray-400 mb-4">دعم طبيعي لصحتك، يساعدك على مواجهة تحديات الأمراض المزمنة.</p>
-                             <a href="#" class="font-bold text-green-400 hover:text-green-300 transition-colors nav-link" data-target="remedies">اعرف المزيد &rarr;</a>
-                        </div>
-                        <!-- Category 3: Skincare -->
-                        <div class="scroll-animate fade-in-up text-center p-8 glass-card rounded-2xl transform hover:-translate-y-2 transition-all duration-300" style="transition-delay: 300ms;">
-                           <div class="mb-4 bg-green-500/20 rounded-full w-24 h-24 flex items-center justify-center mx-auto"><i data-lucide="sparkles" class="w-12 h-12 text-green-400"></i></div>
-                            <h3 class="text-2xl font-bold mb-2 text-white">العناية بالبشرة</h3>
-                            <p class="text-gray-400 mb-4">إشراقة وجمال مستوحى من أنقى المكونات الطبيعية لبشرة صحية.</p>
-                             <a href="#" class="font-bold text-green-400 hover:text-green-300 transition-colors nav-link" data-target="skincare">اعرف المزيد &rarr;</a>
-                        </div>
-                    </div>
+                <div class="md:hidden z-[999]">
+                    <button id="mobile-menu-button" aria-label="Open Menu" aria-controls="mobile-menu" aria-expanded="false">
+                        <svg class="h-8 w-8 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
                 </div>
-            </div>
-        </section>
-
-        <!-- Product Sections (Supplements, Remedies, Skincare) -->
-        <section id="supplements" class="page-section section-hidden py-20">
-            <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-bold text-center mb-12">المكملات الرياضية الطبيعية</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Product Card -->
-                    <div class="glass-card rounded-lg overflow-hidden group">
-                        <img src="https://placehold.co/400x300/16a34a/ffffff?text=بروتين+" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="بروتين نباتي">
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl text-white">بروتين نباتي فائق النقاء</h3>
-                            <p class="text-gray-400 text-sm mt-1">لبناء عضلي صافي وتعافي أسرع.</p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <span class="font-bold text-2xl text-green-400">150 ج</span>
-                                <button class="bg-green-500 text-gray-900 px-5 py-2 rounded-full hover:bg-green-400 text-sm font-bold transition-colors">أضف للسلة</button>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="glass-card rounded-lg overflow-hidden group">
-                        <img src="https://placehold.co/400x300/4ade80/000000?text=طاقة" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="معزز طاقة">
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl text-white">محفز الطاقة العضوي</h3>
-                            <p class="text-gray-400 text-sm mt-1">لتركيز ذهني وأداء بدني متفجر.</p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <span class="font-bold text-2xl text-green-400">120 ج</span>
-                                <button class="bg-green-500 text-gray-900 px-5 py-2 rounded-full hover:bg-green-400 text-sm font-bold transition-colors">أضف للسلة</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </nav>
+        </header>
         
-        <section id="remedies" class="page-section section-hidden py-20">
-             <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-bold text-center mb-12">دعم طبيعي لصحتك</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="glass-card rounded-lg overflow-hidden group">
-                        <img src="https://placehold.co/400x300/facc15/000000?text=كركم" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="شاي الكركم">
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl text-white">كبسولات الكركمين</h3>
-                            <p class="text-gray-400 text-sm mt-1">مضاد التهاب طبيعي لدعم صحة المفاصل.</p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <span class="font-bold text-2xl text-green-400">70 ج</span>
-                                <button class="bg-green-500 text-gray-900 px-5 py-2 rounded-full hover:bg-green-400 text-sm font-bold transition-colors">أضف للسلة</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="skincare" class="page-section section-hidden py-20">
-             <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-bold text-center mb-12">جمال نقي من الطبيعة</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="glass-card rounded-lg overflow-hidden group">
-                        <img src="https://placehold.co/400x300/ec4899/ffffff?text=سيروم" class="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300" alt="سيروم الورد">
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl text-white">سيروم الهيالورونيك النباتي</h3>
-                            <p class="text-gray-400 text-sm mt-1">لترطيب فائق وبشرة ممتلئة بالحياة.</p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <span class="font-bold text-2xl text-green-400">180 ج</span>
-                                <button class="bg-green-500 text-gray-900 px-5 py-2 rounded-full hover:bg-green-400 text-sm font-bold transition-colors">أضف للسلة</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- About Us Section -->
-        <section id="about" class="page-section section-hidden py-20 bg-gray-900/50">
-             <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-bold text-center mb-8">رؤيتنا</h2>
-                <p class="max-w-3xl mx-auto text-center text-gray-300 text-lg">
-                    في "IndoorFarming"، نحن لا نزرع النباتات فقط، بل نزرع مستقبلاً أكثر صحة واستدامة. باستخدام أحدث تقنيات الزراعة الداخلية، نتحكم في كل متغير لنضمن أن كل ورقة وكل ثمرة تصل إلى إمكاناتها الكاملة، خالية من المبيدات ومليئة بالعناصر الغذائية. مهمتنا هي أن نضع قوة الطبيعة النقية بين يديك.
-                </p>
-             </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 border-t border-gray-700/50 pt-12">
-        <div class="container mx-auto px-6 text-center">
-             <a href="#" class="text-4xl font-black text-white nav-link" data-target="home">
-                <span class="text-green-400">Indoor</span>Farming
-            </a>
-            <p class="text-gray-400 mt-4">مستقبل الصحة من قلب الطبيعة</p>
-            <div class="mt-6 flex justify-center space-x-6 space-x-reverse">
-                <a href="#" class="text-gray-400 hover:text-green-400 transition-colors"><i data-lucide="facebook"></i></a>
-                <a href="#" class="text-gray-400 hover:text-green-400 transition-colors"><i data-lucide="instagram"></i></a>
-                <a href="#" class="text-gray-400 hover:text-green-400 transition-colors"><i data-lucide="twitter"></i></a>
-            </div>
-            <p class="text-gray-500 text-sm mt-8 pb-8">&copy; 2024 IndoorFarming. جميع الحقوق محفوظة.</p>
+        <div id="mobile-menu" aria-hidden="true">
+            <a href="#philosophy" class="mobile-nav-link">فلسفتنا</a>
+            <a href="#supplements" class="mobile-nav-link">المكملات</a>
+            <a href="#why-us" class="mobile-nav-link">لماذا نحن؟</a>
+            <a href="#process" class="mobile-nav-link">طريقتنا</a>
+            <a href="#testimonials" class="mobile-nav-link">آراء العملاء</a>
+            <a href="#faq" class="mobile-nav-link">الأسئلة الشائعة</a>
+            <a href="#contact" class="mobile-nav-link">تواصل معنا</a>
         </div>
-    </footer>
 
-    <script>
-        // Initialize lucide icons
-        lucide.createIcons();
+        <main>
+            <section class="hero-content">
+                <h1 class="text-5xl md:text-8xl font-black mb-4 leading-tight text-white hero-title text-glow hero-title-gradient">مستقبل الصحة الطبيعية</h1>
+                <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-gray-300 hero-subtitle">ندمج أنقى ما في الطبيعة مع أدق ما في التكنولوجيا لنقدم لك منتجات لم يسبق لها مثيل.</p>
+                <a href="#supplements" class="bg-green-500 hover:bg-green-400 text-gray-900 font-bold py-4 px-10 rounded-full transition-all duration-300 text-lg hero-button glow-on-hover">اكتشف منتجاتنا</a>
+            </section>
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const pageSections = document.querySelectorAll('.page-section');
+            <div class="bg-gradient-to-b from-transparent via-stone-950/90 to-stone-950">
+                
+                <section id="philosophy" class="py-24">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-white section-title section-title-underline">فلسفتنا: نقاء، قوة، دقة</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                            <div class="philosophy-text">
+                                <p class="text-lg text-gray-300 mb-6 leading-relaxed">نؤمن بأن الطبيعة تحمل أسرار الصحة الكاملة، والعلم هو المفتاح لإطلاق هذه القوة. نحن لا نزرع منتجاتنا فحسب، بل نصممها بدقة لتعظيم الفعالية والنقاء.</p>
+                                <p class="text-lg text-gray-300 leading-relaxed">هدفنا ليس مجرد تقديم مكملات غذائية، بل تقديم ثقة مطلقة بأن ما تضعه في جسدك هو الأنقى والأكثر فعالية.</p>
+                            </div>
+                            <div class="philosophy-image-container rounded-2xl overflow-hidden glass-card p-2">
+                                <img src="image/indoor farming.png" alt="A pristine mushroom growing environment" class="w-full h-full object-cover rounded-xl">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="supplements" class="py-24 bg-stone-950/50">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-white section-title section-title-underline">مكملاتنا الغذائية الثورية</h2>
+                        <h3 class="text-3xl font-bold mb-8 border-r-4 border-green-400 pr-4">أوميجا 3 من مصدر نباتي</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+                            <div class="glass-card rounded-2xl overflow-hidden group flex flex-col product-card">
+                                <img src="image/i1.jpg" alt="Enoki Mushroom" class="w-full h-64 object-cover product-image">
+                                <div class="p-8 text-right flex flex-col flex-grow">
+                                    <span class="text-sm bg-green-500 text-black font-bold px-3 py-1 rounded-full self-start">الأكثر فعالية</span>
+                                    <h4 class="font-bold text-2xl text-white mt-4">فطر إينوكي</h4>
+                                    <p class="text-gray-400 mt-2 flex-grow">تركيز عالٍ من الأوميجا 3 لدعم فائق لصحة الدماغ والقلب.</p>
+                                    <a href="#" class="mt-6 bg-green-600/50 hover:bg-green-600/80 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 text-center">أضف إلى السلة</a>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-2xl overflow-hidden group flex flex-col product-card">
+                                <img src="image/i2.jpg" alt="Pink Oyster Mushroom" class="w-full h-64 object-cover product-image">
+                                <div class="p-8 text-right flex flex-col flex-grow">
+                                    <span class="text-sm bg-yellow-500 text-black font-bold px-3 py-1 rounded-full self-start">للاستخدام اليومي</span>
+                                    <h4 class="font-bold text-2xl text-white mt-4">فطر المحار الوردي</h4>
+                                    <p class="text-gray-400 mt-2 flex-grow">جرعة متوازنة للحفاظ على النشاط والصحة العامة.</p>
+                                    <a href="#" class="mt-6 bg-green-600/50 hover:bg-green-600/80 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 text-center">أضف إلى السلة</a>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-8 border-r-4 border-green-400 pr-4">فيتامينات ومعادن أساسية</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="glass-card rounded-2xl overflow-hidden group flex flex-col product-card">
+                                <img src="image/i3.jpg" class="w-full h-56 object-cover product-image" alt="Shiitake Mushroom">
+                                <div class="p-6 flex flex-col flex-grow"><h4 class="font-bold text-xl text-white">فطر شيتاكي</h4><p class="text-gray-400 text-sm mt-1 flex-grow">غني بفيتامين D و B لدعم المناعة والطاقة.</p><a href="#" class="mt-4 bg-green-600/50 hover:bg-green-600/80 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 text-center">أضف إلى السلة</a></div>
+                            </div>
+                            <div class="glass-card rounded-2xl overflow-hidden group flex flex-col product-card">
+                                <img src="image/i4.jpg" class="w-full h-56 object-cover product-image" alt="Maitake Mushroom">
+                                <div class="p-6 flex flex-col flex-grow"><h4 class="font-bold text-xl text-white">فطر مايتاكي</h4><p class="text-gray-400 text-sm mt-1 flex-grow">يساعد على تنظيم مستويات السكر في الدم.</p><a href="#" class="mt-4 bg-green-600/50 hover:bg-green-600/80 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 text-center">أضف إلى السلة</a></div>
+                            </div>
+                            <div class="glass-card rounded-2xl overflow-hidden group flex flex-col product-card">
+                                <img src="image/i5.jpg" class="w-full h-56 object-cover product-image" alt="Portobello Mushroom">
+                                <div class="p-6 flex flex-col flex-grow"><h4 class="font-bold text-xl text-white">فطر بورتوبيللو</h4><p class="text-gray-400 text-sm mt-1 flex-grow">مصدر ممتاز للبوتاسيوم ومضادات الأكسدة.</p><a href="#" class="mt-4 bg-green-600/50 hover:bg-green-600/80 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 text-center">أضف إلى السلة</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="why-us" class="py-24">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-20 text-white section-title section-title-underline">لماذا IndoorFarming؟</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                            <div class="feature-card">
+                                <div class="mb-6 text-green-400 flex justify-center icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg></div>
+                                <h3 class="text-2xl font-bold mb-3">نقاء مطلق</h3>
+                                <p class="text-gray-400 leading-relaxed">منتجاتنا تنمو في بيئة معزولة تمامًا، خالية 100% من المبيدات والملوثات.</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="mb-6 text-green-400 flex justify-center icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></div>
+                                <h3 class="text-2xl font-bold mb-3">تقنية متقدمة</h3>
+                                <p class="text-gray-400 leading-relaxed">نستخدم أحدث التقنيات للتحكم في كل الظروف البيئية وضمان أعلى جودة.</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="mb-6 text-green-400 flex justify-center icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+                                <h3 class="text-2xl font-bold mb-3">فعالية قصوى</h3>
+                                <p class="text-gray-400 leading-relaxed">التحكم الدقيق يعني تركيزًا أعلى للمواد الفعالة في كل منتج.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="process" class="py-24 bg-stone-950/50">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-20 text-white section-title section-title-underline">طريقة عملنا الدقيقة</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 text-center">
+                            <div class="process-step">
+                                <div class="mb-6 text-green-400 flex justify-center icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 20A7 7 0 0 1 4 13a7 7 0 0 1 7-7 7 7 0 0 1 7 7c0 1.92-.78 3.66-2 4.9z"></path><path d="M11 6V4"></path><path d="M11 22v-2"></path></svg></div>
+                                <h3 class="text-2xl font-bold mb-3">1. الزراعة المعقمة</h3>
+                                <p class="text-gray-400 leading-relaxed">تبدأ كل دورة في مختبراتنا المعقمة لضمان بيئة نمو نقية.</p>
+                            </div>
+                            <div class="process-step">
+                                <div class="mb-6 text-green-400 flex justify-center icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 9.5c-1.28-1.28-2-2.99-2-4.78 0-1.79.72-3.5 2-4.78s2.99-2 4.78-2c1.79 0 3.5.72 4.78 2s2 2.99 2 4.78-2 4.78-2 4.78L2 9.5z"></path><path d="M12.5 22c1.28 1.28 2.99 2 4.78 2 1.79 0 3.5-.72 4.78-2s2-2.99 2-4.78-.72-3.5-2-4.78-2.99-2-4.78-2-4.78 2-4.78 2L12.5 22z"></path></svg></div>
+                                <h3 class="text-2xl font-bold mb-3">2. التحكم البيئي</h3>
+                                <p class="text-gray-400 leading-relaxed">نراقب ونعدل كل متغير بيئي بدقة متناهية لتحفيز النمو الأمثل.</p>
+                            </div>
+                            <div class="process-step">
+                                <div class="mb-6 text-green-400 flex justify-center icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+                                <h3 class="text-2xl font-bold mb-3">3. الحصاد المستهدف</h3>
+                                <p class="text-gray-400 leading-relaxed">يتم الحصاد في ذروة النضج للحصول على أعلى تركيز للمركبات النشطة.</p>
+                            </div>
+                            <div class="process-step">
+                                <div class="mb-6 text-green-400 flex justify-center icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                                <h3 class="text-2xl font-bold mb-3">4. اختبار الجودة</h3>
+                                <p class="text-gray-400 leading-relaxed">يخضع كل منتج لاختبارات صارمة لضمان النقاء والفعالية والسلامة.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="testimonials" class="py-24">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-20 text-white section-title section-title-underline">يثقون بنا لصحتهم</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div class="glass-card rounded-2xl p-8 flex flex-col items-center text-center testimonial-card">
+                                <img src="https://placehold.co/100x100/4ade80/0a0a0a?text=SA" alt="Customer Avatar" class="testimonial-avatar mb-5">
+                                <p class="text-gray-300 mb-5 italic">"لم أشعر بهذا القدر من النشاط والتركيز منذ سنوات. منتج فطر إينوكي غير حياتي حقًا."</p>
+                                <h4 class="font-bold text-lg text-white">سارة الأحمدي</h4>
+                                <span class="text-sm text-green-400">رياضية</span>
+                            </div>
+                            <div class="glass-card rounded-2xl p-8 flex flex-col items-center text-center testimonial-card">
+                                <img src="https://placehold.co/100x100/4ade80/0a0a0a?text=KM" alt="Customer Avatar" class="testimonial-avatar mb-5">
+                                <p class="text-gray-300 mb-5 italic">"كنت متشككًا في البداية، لكن جودة المنتجات ونقائها واضحة. أشعر بفارق كبير في صحتي العامة."</p>
+                                <h4 class="font-bold text-lg text-white">خالد منصور</h4>
+                                <span class="text-sm text-green-400">مهندس برمجيات</span>
+                            </div>
+                            <div class="glass-card rounded-2xl p-8 flex flex-col items-center text-center testimonial-card">
+                                <img src="https://placehold.co/100x100/4ade80/0a0a0a?text=FR" alt="Customer Avatar" class="testimonial-avatar mb-5">
+                                <p class="text-gray-300 mb-5 italic">"أخيرًا، شركة تهتم بالجودة والاستدامة. أنا عميلة دائمة الآن. شكرًا IndoorFarming!"</p>
+                                <h4 class="font-bold text-lg text-white">فاطمة رشاد</h4>
+                                <span class="text-sm text-green-400">طبيبة أسنان</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="faq" class="py-24 bg-stone-950/50">
+                    <div class="container mx-auto px-6 max-w-4xl">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-white section-title section-title-underline">أسئلة شائعة</h2>
+                        <div class="space-y-6">
+                            <div class="glass-card rounded-xl p-6 faq-item">
+                                <div class="flex justify-between items-center cursor-pointer faq-question">
+                                    <h3 class="text-xl font-bold text-white">هل منتجاتكم عضوية؟</h3>
+                                    <div class="text-green-400 faq-toggle-icon text-3xl font-thin">+</div>
+                                </div>
+                                <div class="faq-answer text-gray-400">
+                                    <p>منتجاتنا تتجاوز معايير "العضوية". بيئتنا الداخلية المعزولة تضمن نقاءً مطلقًا بنسبة 100%.</p>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-xl p-6 faq-item">
+                                <div class="flex justify-between items-center cursor-pointer faq-question">
+                                    <h3 class="text-xl font-bold text-white">ما الفرق بين أوميجا 3 من الفطر وزيت السمك؟</h3>
+                                    <div class="text-green-400 faq-toggle-icon text-3xl font-thin">+</div>
+                                </div>
+                                <div class="faq-answer text-gray-400">
+                                    <p>مصدرنا النباتي مستدام وخالٍ من مخاطر تلوث المحيطات بالمعادن الثقيلة مثل الزئبق.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="contact" class="py-24">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-white section-title section-title-underline">هل لديك استفسار؟</h2>
+                        <div class="max-w-4xl mx-auto glass-card rounded-2xl p-8 md:p-12">
+                            <form action="#" method="POST">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label for="name" class="block text-gray-300 mb-2">الاسم</label>
+                                        <input type="text" id="name" name="name" required class="form-input">
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-gray-300 mb-2">البريد الإلكتروني</label>
+                                        <input type="email" id="email" name="email" required class="form-input">
+                                    </div>
+                                </div>
+                                <div class="mb-6">
+                                    <label for="message" class="block text-gray-300 mb-2">رسالتك</label>
+                                    <textarea id="message" name="message" rows="5" required class="form-input"></textarea>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="bg-green-500 hover:bg-green-400 text-gray-900 font-bold py-3 px-10 rounded-full transition-all duration-300 text-lg glow-on-hover">إرسال الرسالة</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+        
+        <footer class="bg-stone-950 border-t border-white/10">
+            <div class="container mx-auto px-6 py-12">
+                 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right">
+                    <div class="md:col-span-1">
+                        <img src="image/indoor farming.png" class="h-16 w-auto mx-auto md:mx-0 mb-4" alt="IndoorFarming Logo">
+                        <p class="text-gray-400 text-sm">ندمج الطبيعة والتكنولوجيا من أجل مستقبل أكثر صحة.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white mb-4">روابط سريعة</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#supplements" class="text-gray-400 hover:text-green-400 transition-colors">المكملات</a></li>
+                            <li><a href="#why-us" class="text-gray-400 hover:text-green-400 transition-colors">لماذا نحن؟</a></li>
+                            <li><a href="#faq" class="text-gray-400 hover:text-green-400 transition-colors">الأسئلة الشائعة</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white mb-4">تواصل معنا</h4>
+                        <ul class="space-y-2 text-gray-400">
+                            <li>info@indoorfarming.com</li>
+                            <li>+20 100 969 2949</li>
+                            <li>طنطا الغربية</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white mb-4">تابعنا</h4>
+                        <div class="flex justify-center md:justify-start space-x-4 space-x-reverse">
+                            <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-green-400 transition-colors"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                            <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-green-400 transition-colors"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+                            <a href="#" aria-label="Instagram" class="text-gray-400 hover:text-green-400 transition-colors"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.44-1.441-1.44z"></path></svg></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center text-gray-500 border-t border-white/10 mt-8 pt-8">
+                    <p>&copy; 2025 IndoorFarming. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <div id="cookie-banner" class="p-4">
+        <div class="container mx-auto max-w-4xl glass-card rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <p class="text-gray-300 text-center md:text-right">نحن نستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا. <a href="#" class="text-green-400 hover:underline">اعرف المزيد</a></p>
+            <div class="flex items-center gap-4 flex-shrink-0">
+                <button id="cookie-decline" class="bg-transparent border border-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full transition-colors duration-300">رفض</button>
+                <button id="cookie-accept" class="bg-green-500 hover:bg-green-400 text-gray-900 font-bold py-2 px-6 rounded-full transition-colors duration-300">قبول</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+
+        let heroMushroom;
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg-canvas'), antialias: true, alpha: true });
+        const mouse = new THREE.Vector2();
+        const clock = new THREE.Clock();
+
+        function initThreeScene() {
+            scene.fog = new THREE.FogExp2(0x0a0a0a, 0.025);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.position.set(0, 2, 18);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            const keyLight = new THREE.DirectionalLight(0x4ade80, 2.0);
+            keyLight.position.set(-1, 1, 1);
+            const fillLight = new THREE.DirectionalLight(0x818cf8, 1.0);
+            fillLight.position.set(1, 1, 1);
+            const backLight = new THREE.DirectionalLight(0xffffff, 2.0);
+            backLight.position.set(0, 2, -5);
+            scene.add(ambientLight, keyLight, fillLight, backLight);
+
+            createHeroMushroom();
+        }
+
+        function createHeroMushroom() {
+            heroMushroom = new THREE.Group();
+            const stemMat = new THREE.MeshStandardMaterial({ color: 0xe0e0e0, roughness: 0.9, metalness: 0.1 });
+            const stemGeom = new THREE.CylinderGeometry(0.8, 1.2, 10, 32);
+            const stem = new THREE.Mesh(stemGeom, stemMat);
+            stem.position.y = -5;
+
+            const capMat = new THREE.MeshStandardMaterial({ color: 0x3f6212, roughness: 0.7, metalness: 0.2 });
+            const capGeom = new THREE.SphereGeometry(5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 1.9);
+            const cap = new THREE.Mesh(capGeom, capMat);
+            cap.position.y = 0.5;
+            
+            heroMushroom.add(stem, cap);
+            heroMushroom.scale.set(0.8, 0.8, 0.8);
+            scene.add(heroMushroom);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            if (heroMushroom) {
+                heroMushroom.rotation.y = elapsedTime * 0.1;
+                heroMushroom.position.y = Math.sin(elapsedTime * 0.5) * 0.5;
+            }
+            
+            camera.position.x += (mouse.x * 5 - camera.position.x) * 0.05;
+            camera.position.y += (-mouse.y * 2 - camera.position.y + 2) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        function handleResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initThreeScene();
+            window.addEventListener('resize', handleResize);
+            window.addEventListener('mousemove', (event) => {
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // --- ORIGINAL AND ADDED LOGIC ---
+
+            // Hero Animation (Original + Header)
+            gsap.timeline({delay: 0.2})
+                .from(".hero-title", { duration: 1, y: 50, opacity: 0, ease: "power3.out" })
+                .from(".hero-subtitle", { duration: 1, y: 50, opacity: 0, ease: "power3.out" }, "-=0.8")
+                .from(".hero-button", { duration: 1, y: 50, opacity: 0, ease: "power3.out" }, "-=0.8");
+
+            gsap.from("header", { y: -100, opacity: 0, duration: 1, delay: 0.5, ease: "power3.out" });
+            
+            // Navbar Scroll (Original)
+            ScrollTrigger.create({
+                trigger: "body", start: "top top", end: "+=100", scrub: 1,
+                onUpdate: self => {
+                    const navbar = document.getElementById('navbar');
+                    if (self.progress > 0) {
+                        navbar.style.background = 'rgba(10, 10, 10, 0.5)';
+                        navbar.style.backdropFilter = 'blur(12px)';
+                    } else {
+                        navbar.style.background = 'transparent';
+                        navbar.style.backdropFilter = 'none';
+                    }
+                }
+            });
+
+            // Section Title Underline (Original)
+            gsap.utils.toArray('.section-title-underline').forEach(title => {
+                gsap.from(title, { y: 60, opacity: 0, duration: 1, ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: title, start: "top 85%",
+                        onEnter: () => title.classList.add('in-view')
+                    }
+                });
+            });
+            
+            // --- THIS IS THE ORIGINAL ANIMATION LOGIC, UNTOUCHED ---
+            const animatedElements = document.querySelectorAll('.product-card, .feature-card, .process-step, .testimonial-card, .faq-item, .philosophy-text > p, .philosophy-image-container');
+            animatedElements.forEach(el => {
+                gsap.from(el, { y: 60, opacity: 0, duration: 1, ease: "power3.out",
+                    scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none none" }
+                });
+            });
+            // --- END OF ORIGINAL ANIMATION LOGIC ---
+
+            // FAQ Logic (Original)
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    faqItems.forEach(i => i.classList.remove('active'));
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Back to Top Button (Original)
+            const backToTopButton = document.getElementById('back-to-top');
+            ScrollTrigger.create({
+                trigger: 'body', start: 'top -20%',
+                onUpdate: self => {
+                    backToTopButton.classList.toggle('visible', self.direction === 1 && self.progress > 0);
+                }
+            });
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            });
+
+            // Cookie Banner Logic (Original)
+            function handleCookieConsent() {
+                const banner = document.getElementById('cookie-banner');
+                const acceptBtn = document.getElementById('cookie-accept');
+                const declineBtn = document.getElementById('cookie-decline');
+
+                const getCookie = (name) => {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                }
+
+                if (!getCookie('cookie_consent')) {
+                    setTimeout(() => {
+                        banner.classList.add('visible');
+                    }, 2000);
+                }
+
+                const setConsent = (value) => {
+                    const d = new Date();
+                    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+                    let expires = "expires="+ d.toUTCString();
+                    document.cookie = `cookie_consent=${value};${expires};path=/`;
+                    banner.classList.remove('visible');
+                }
+
+                acceptBtn.addEventListener('click', () => setConsent('accepted'));
+                declineBtn.addEventListener('click', () => setConsent('declined'));
+            }
+            handleCookieConsent();
+
+            // Loader (Original)
+            const loaderElement = document.getElementById('loader');
+            gsap.to(loaderElement, { opacity: 0, duration: 0.7, delay: 1, onComplete: () => {
+                loaderElement.style.display = 'none';
+            }});
+            
+            // --- NEW FUNCTIONALITY ADDED BELOW ---
+
+            // ADDED: Active Nav Link Highlighting
+            const sections = gsap.utils.toArray('section[id]');
+            const navLinks = gsap.utils.toArray('.nav-link');
+            sections.forEach(section => {
+                ScrollTrigger.create({
+                    trigger: section,
+                    start: "top center",
+                    end: "bottom center",
+                    onToggle: self => {
+                        const id = section.getAttribute('id');
+                        const correspondingLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                        if (self.isActive) {
+                            navLinks.forEach(link => link.classList.remove('active'));
+                            if (correspondingLink) correspondingLink.classList.add('active');
+                        }
+                    }
+                });
+            });
+
+            // ADDED: Mobile Menu Logic
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            
+            function toggleMenu(isOpen) {
+                const open = typeof isOpen === 'boolean' ? isOpen : !mobileMenu.classList.contains('open');
+                mobileMenu.classList.toggle('open', open);
+                mobileMenuButton.setAttribute('aria-expanded', open);
+                mobileMenu.setAttribute('aria-hidden', !open);
+                document.body.style.overflow = open ? 'hidden' : '';
 
-            // Function to switch pages
-            function showPage(targetId) {
-                pageSections.forEach(section => {
-                    if (section.id === targetId) {
-                        section.style.display = 'block';
-                        setTimeout(() => {
-                            section.classList.remove('section-hidden');
-                        }, 20);
-                    } else {
-                        section.classList.add('section-hidden');
-                        setTimeout(() => {
-                           if(section.id !== targetId) section.style.display = 'none';
-                        }, 600); // Match transition duration
-                    }
-                });
-                window.scrollTo(0, 0);
+                if (open) {
+                    gsap.to('.mobile-nav-link', {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        stagger: 0.1,
+                        ease: 'power3.out',
+                        delay: 0.2
+                    });
+                } else {
+                     gsap.set('.mobile-nav-link', { opacity: 0, y: 20 });
+                }
             }
+            mobileMenuButton.addEventListener('click', () => toggleMenu());
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => toggleMenu(false));
+            });
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.dataset.target;
-                    showPage(targetId);
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                    }
+            // ADDED: 3D Tilt Effect on Glass Cards
+            document.querySelectorAll('.glass-card').forEach(card => {
+                const perspective = 1000;
+                const maxRotate = 8;
+                card.addEventListener('mousemove', (e) => {
+                    const { left, top, width, height } = card.getBoundingClientRect();
+                    const x = e.clientX - left;
+                    const y = e.clientY - top;
+                    const rotateX = maxRotate * ((y / height) - 0.5);
+                    const rotateY = -maxRotate * ((x / width) - 0.5);
+
+                    gsap.to(card, {
+                        duration: 0.7,
+                        ease: 'power3.out',
+                        transform: `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px) scale(1.03)`
+                    });
+                });
+                card.addEventListener('mouseleave', () => {
+                     gsap.to(card, {
+                        duration: 0.7,
+                        ease: 'power3.out',
+                        transform: `perspective(${perspective}px) rotateX(0) rotateY(0) translateY(-12px) scale(1.03)`
+                    });
                 });
             });
-
-            mobileMenuButton.addEventListener('click', function() {
-                mobileMenu.classList.toggle('hidden');
-            });
-
-            // Scroll animation logic
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, {
-                threshold: 0.1 // Trigger when 10% of the element is visible
-            });
-
-            const elementsToAnimate = document.querySelectorAll('.scroll-animate');
-            elementsToAnimate.forEach(el => observer.observe(el));
-
-            // Initially show the home page
-            showPage('home');
+            
+            animate();
         });
     </script>
-
 </body>
 </html>
-
